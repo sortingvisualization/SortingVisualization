@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<group>
+	<moving>1</moving>
+	<speed>0.93</speed>
+	<rotate>4.99671</rotate>
+	<name>0</name>
+	<float>0.940741</float>
+	<group>
+		<bool>1</bool>
+		<float>0.940741</float>
+	</group>
+</group>

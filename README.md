@@ -14,7 +14,11 @@ Selection sort
 
 Feel free to use, share or modify the application.   
 If you have any questions regarding the code, found some bug that you want to report or simply want to improve the application in any way, please create an issue.
-
+  
+Hotkeys:  
+F - full screen  
+H - hide UI  
+R - reset array
 <!--
 **sortingvisualization/SortingVisualization** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 

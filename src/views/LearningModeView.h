@@ -6,13 +6,14 @@ class ArrayService;
 class DrawService;
 class SortService;
 class StateManager;
+class TranslationService;
 class ViewService;
 
 class LearningModeView : public IView
 {
 public:
 	LearningModeView(std::shared_ptr<ArrayService>, std::shared_ptr<DrawService>, std::shared_ptr<SortService>, 
-		std::shared_ptr<ViewService>, std::shared_ptr<StateManager>);
+		std::shared_ptr<TranslationService>, std::shared_ptr<ViewService>, std::shared_ptr<StateManager>);
 	~LearningModeView();
 
 	void draw() override;
@@ -38,6 +39,7 @@ private:
 	std::shared_ptr<ArrayService> arrayService;
 	std::shared_ptr<DrawService> drawService;
 	std::shared_ptr<SortService> sortService;
+	std::shared_ptr<TranslationService> translationService;
 	std::shared_ptr<ViewService> viewService;
 	std::shared_ptr<StateManager> stateManager;
 

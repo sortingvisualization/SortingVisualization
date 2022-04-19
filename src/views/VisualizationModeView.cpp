@@ -8,13 +8,26 @@
 #include "Logger.h"
 #include "SortDefinitions.h"
 #include "SortService.h"
+#include "TranslationService.h"
 #include "ViewService.h"
 
+namespace
+{
+std::map<std::string, Tc> drawConstToTranslationMap =
+{
+	{CIRCLE_DRAW, Tc::DrawCircle},
+	{COLUMNS_DRAW, Tc::DrawColumns},
+	{LINES_DRAW, Tc::DrawLines},
+	{PYRAMID_DRAW, Tc::DrawPyramid},
+};
+}
+
 VisualizationModeView::VisualizationModeView(std::shared_ptr<ArrayService> arrayService, std::shared_ptr<DrawService> drawService, 
-	std::shared_ptr<SortService> sortService, std::shared_ptr<ViewService> viewService)
+	std::shared_ptr<SortService> sortService, std::shared_ptr<TranslationService> translationService, std::shared_ptr<ViewService> viewService)
 	: arrayService(std::move(arrayService))
 	, drawService(std::move(drawService))
 	, sortService(std::move(sortService))
+	, translationService(std::move(translationService))
 	, viewService(std::move(viewService))
 {
 	setup();
@@ -70,8 +83,10 @@ void VisualizationModeView::setup()
 	{
 		sortService->setSortStrategy(nameToSortTypeMap.at(sortType));
 	}
-
-	drawService->setDrawStrategy(DrawType::ColumnsDraw);
+	else
+	{
+		sortService->setSortStrategy(SortType::BubbleSort);
+	}
 
 	setupColors();
 	arraySetup();
@@ -80,8 +95,7 @@ void VisualizationModeView::setup()
 void VisualizationModeView::setupButtons()
 {
 	setupBackButton();
-	setupSortButton();
-	setupResetButton();
+	setupSortResetButton();
 	setupDrawMethodsGroup();
 	setupPropertiesParams();
 	setupPropertiesGroup();
@@ -91,25 +105,16 @@ void VisualizationModeView::setupButtons()
 void VisualizationModeView::setupBackButton()
 {
 	backButton = std::make_shared<Button>(0, 0, 0, 0);
-	backButton->setText(BACK_BUTTON_LABEL);
+	backButton->setText(translationService->getTranslation(Tc::ButtonBack));
 	backButton->setBackgroundColor(ofColor(227, 64, 27));
 
 	ofAddListener(backButton->clickedInside, this, &VisualizationModeView::onButtonPressed);
 }
 
-void VisualizationModeView::setupSortButton()
-{
-	backButton = std::make_shared<Button>(0, 0, 0, 0);
-	backButton->setText(BACK_BUTTON_LABEL);
-	backButton->setBackgroundColor(ofColor(227, 64, 27));
-
-	ofAddListener(backButton->clickedInside, this, &VisualizationModeView::onButtonPressed);
-}
-
-void VisualizationModeView::setupResetButton()
+void VisualizationModeView::setupSortResetButton()
 {
 	sortResetButton = std::make_shared<Button>(0, 0, 0, 0);
-	sortResetButton->setText(SORT_BUTTON_LABEL);
+	sortResetButton->setText(translationService->getTranslation(Tc::ButtonSort));
 	sortResetButton->setBackgroundColor(ofColor(83, 188, 104));
 
 	ofAddListener(sortResetButton->clickedInside, this, &VisualizationModeView::onButtonPressed);
@@ -134,7 +139,7 @@ void VisualizationModeView::setButtonsParameters() const
 
 void VisualizationModeView::setupDrawMethodsGroup()
 {
-	drawMethodsParams.setName(DRAW_METHOD_GROUP);
+	drawMethodsParams.setName(translationService->getTranslation(Tc::DrawMethod));
 	for (const auto & strategy : drawService->getDrawTypes())
 	{
 		const auto it = std::find_if(nameToDrawTypeMap.cbegin(), nameToDrawTypeMap.cend(),
@@ -143,7 +148,8 @@ void VisualizationModeView::setupDrawMethodsGroup()
 			});
 		if (it != nameToDrawTypeMap.cend())
 		{
-			drawMethodsParams.add(ofParameter<bool>(it->first, false));
+			const auto translatedName = translationService->getTranslation(drawConstToTranslationMap.at(it->first));
+			drawMethodsParams.add(ofParameter<bool>(translatedName, false));
 		}
 	}
 	
@@ -156,16 +162,15 @@ void VisualizationModeView::setupDrawMethodsGroup()
 		drawMethodsGroup->loadTheme(DEFAULT_THEME, true);
 		drawMethodsGroup->setActiveToggle(currentDrawIndex);
 		drawMethodsGroup->minimize();
-
 	}
 }
 
 void VisualizationModeView::setupPropertiesParams()
 {
-	propertiesParams.setName(PROPERTIES_GROUP);
-	propertiesParams.add(arraySizeParam.set(ARRAY_SIZE, arraySize, 10, 1000));
-	propertiesParams.add(firstColorParam.set(COLOR_1, ofColor(0,255,0),ofColor(10,10,10), ofColor(255,255,255)));
-	propertiesParams.add(secondColorParam.set(COLOR_2, ofColor(0,0,255),ofColor(10,10,10), ofColor(255,255,255)));
+	propertiesParams.setName(translationService->getTranslation(Tc::Options));
+	propertiesParams.add(arraySizeParam.set(translationService->getTranslation(Tc::ArraySize), arraySize, 10, 1000));
+	propertiesParams.add(firstColorParam.set(translationService->getTranslation(Tc::Color1), ofColor(0,255,0),ofColor(10,10,10), ofColor(255,255,255)));
+	propertiesParams.add(secondColorParam.set(translationService->getTranslation(Tc::Color2), ofColor(0,0,255),ofColor(10,10,10), ofColor(255,255,255)));
 }
 
 void VisualizationModeView::setupPropertiesGroup()
@@ -184,7 +189,7 @@ void VisualizationModeView::setupPropertiesGroup()
 
 void VisualizationModeView::setupSpeedControl()
 {
-	speedParams.add(speedParam.set(SPEED, 0.5, 0.1, 1));
+	speedParams.add(speedParam.set(translationService->getTranslation(Tc::Speed), 0.5, 0.1, 1));
 	speedParam.addListener(this, &VisualizationModeView::onSortSpeedChanged);
 
 	speedGroup = gui.addGroup();
@@ -203,7 +208,7 @@ void VisualizationModeView::setupColors()
 
 void VisualizationModeView::arraySetup() const
 {
-	sortResetButton->setText(SORT_BUTTON_LABEL);
+	sortResetButton->setText(translationService->getTranslation(Tc::ButtonSort));
 
 	sortService->stopSorting();
 	arrayService->initializeArray(ArrayProperties(arraySize, 0), false);
@@ -226,22 +231,22 @@ void VisualizationModeView::onButtonPressed(std::string & str)
 {
 	if(!uiHidden)
 	{
-		if (str == BACK_BUTTON_LABEL)
+		if (str == translationService->getTranslation(Tc::ButtonBack))
 		{
 			drawService->stopDrawing();
 			sortService->stopSorting();
 			viewService->addToContext(MODE_CONTEXT, mode);
 			viewService->setCurrentView(ViewType::AlgorithmSelectionView);
 		}
-		else if (str == SORT_BUTTON_LABEL)
+		else if (str == translationService->getTranslation(Tc::ButtonSort))
 		{
-			sortResetButton->setText(RESET_BUTTON_LABEL);
+			sortResetButton->setText(translationService->getTranslation(Tc::ButtonReset));
 			minimizeGroups();
 
 			sortService->stopSorting();
 			sortService->sort(false);
 		}
-		else if (str == RESET_BUTTON_LABEL)
+		else if (str == translationService->getTranslation(Tc::ButtonReset))
 		{
 			arraySetup();
 		}
@@ -252,7 +257,14 @@ void VisualizationModeView::onDrawTypeChanged(int & index)
 {
 	currentDrawIndex = index;
 	const auto name = drawMethodsParams.get(currentDrawIndex).getName();
-	drawService->setDrawStrategy(nameToDrawTypeMap.at(name));
+	const auto it = std::find_if(drawConstToTranslationMap.begin(), drawConstToTranslationMap.end(), [this, &name](const auto & element)
+	{
+		return translationService->getTranslation(element.second) == name;
+	});
+	if(it != drawConstToTranslationMap.end())
+	{
+		drawService->setDrawStrategy(nameToDrawTypeMap.at(it->first));
+	}
 	setupColors();
 	minimizeGroups();
 }

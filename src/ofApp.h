@@ -8,11 +8,12 @@ class ArrayService;
 class DrawService;
 class GuiService;
 class SortService;
+class TranslationService;
 class ViewService;
 
 class StateManager;
-class SortFactory;
 class DrawFactory;
+class SortFactory;
 class ViewFactory;
 
 class ofApp : public ofBaseApp
@@ -39,6 +40,7 @@ private:
 	std::shared_ptr<DrawService> drawService;
 	std::shared_ptr<GuiService> guiService;
 	std::shared_ptr<SortService> sortService;
+	std::shared_ptr<TranslationService> translationService;
 	std::shared_ptr<ViewService> viewService;
 
 	std::shared_ptr<StateManager> stateManager;

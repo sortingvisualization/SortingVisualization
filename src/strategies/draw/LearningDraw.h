@@ -3,11 +3,12 @@
 #include "ofTrueTypeFont.h"
 
 class StateManager;
+class TranslationService;
 
 class LearningDraw : public BaseDraw
 {
 public:
-	LearningDraw(std::shared_ptr<StateManager>);
+	LearningDraw(std::shared_ptr<TranslationService>, std::shared_ptr<StateManager>);
 	~LearningDraw();
 
 	void draw(const std::vector<ArrayElement> &) override;
@@ -25,6 +26,7 @@ private:
 	void onKeyPressed(ofKeyEventArgs &);
 	void onWindowResized(ofResizeEventArgs &);
 
+	std::shared_ptr<TranslationService> translationService;
 	std::shared_ptr<StateManager> stateManager;
 
 	bool uiHidden{false};

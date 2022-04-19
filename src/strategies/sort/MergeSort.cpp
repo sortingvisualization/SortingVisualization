@@ -165,7 +165,9 @@ void MergeSort::mergeLearn(ArrayModel & model, const int start, const int mid, c
 		model.setState(i, ElementState::Sorted);
 		values.at(i).elementState = ElementState::Hidden;
 		stateManager->addState({model.getArray(), values});
-		if(i == model.getArraySize() - 1)
+		const auto size = model.getArraySize();
+
+		if(end - start == size - 1 && i == size -1)
 		{
 			stateManager->setContextCurrentState({SortState::Sorted});
 		}

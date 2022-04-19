@@ -181,7 +181,7 @@ void RadixSort::countingSortLearn(ArrayModel & model, const int exp) const
         counts.setState(positionValue, ElementState::Bucket);
         output.setState(index, ElementState::Sorted);
         stateManager->addState(getStates());
-        stateManager->setContextCurrentState({SortState::RadixSortMoveToTemporaryArray, {index}});
+        stateManager->setContextCurrentState({SortState::RadixSortMoveToTemporaryArray, {model.getValueAtIndex(i)}});
     }
 
 	output.setStatesRange(0, output.getArraySize() - 1, ElementState::Selected);

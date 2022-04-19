@@ -15,15 +15,12 @@ namespace
 {
 constexpr auto CIRCLE_DRAW = "Circle";
 constexpr auto COLUMNS_DRAW = "Columns";
-constexpr auto LEARNING_DRAW = "LearningDraw";
 constexpr auto LINES_DRAW = "Lines";
 constexpr auto PYRAMID_DRAW = "Pyramid";
-constexpr auto TRIANGLES_DRAW = "Triangles";
 
 std::map<std::string, DrawType> nameToDrawTypeMap = {
 	{CIRCLE_DRAW, DrawType::CircleDraw},
 	{COLUMNS_DRAW, DrawType::ColumnsDraw},
-	{LEARNING_DRAW, DrawType::LearningDraw},
 	{LINES_DRAW, DrawType::LinesDraw},
 	{PYRAMID_DRAW, DrawType::PyramidDraw},
 };

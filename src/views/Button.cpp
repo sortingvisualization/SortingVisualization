@@ -1,11 +1,13 @@
 #include "Button.h"
+
 #include "ofGraphics.h"
 
 Button::Button(const double x, const double y, const double w, const double h)
 	: shape(x, y, w, h)
 {
 	ofRegisterMouseEvents(this);
-	font.load("mono.ttf", fontSize);
+
+	reloadFont();
 }
 
 Button::~Button()
@@ -128,7 +130,11 @@ void Button::mouseExited(ofMouseEventArgs &)
 
 void Button::reloadFont()
 {
-	font.load("mono.ttf", fontSize);
+	ofTrueTypeFontSettings fontSettings("mono.ttf", fontSize);
+	fontSettings.addRange(ofUnicode::Latin);
+	fontSettings.addRange(ofUnicode::LatinA);
+
+	font.load(fontSettings);
 }
 
 void Button::drawCenteredText() const

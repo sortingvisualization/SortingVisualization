@@ -1,9 +1,26 @@
 #include "AlgorithmSelectionView.h"
-#include "ViewService.h"
-#include "SortDefinitions.h"
 
-AlgorithmSelectionView::AlgorithmSelectionView(std::shared_ptr<ViewService> viewService)
-	: viewService(std::move(viewService))
+#include "Logger.h"
+#include "SortDefinitions.h"
+#include "TranslationService.h"
+#include "ViewService.h"
+
+namespace
+{
+std::map<Tc, std::string> sortTranslationToConstMap =
+{
+	{Tc::SortBubble, BUBBLE_SORT},
+	{Tc::SortInsertion, INSERTION_SORT},
+	{Tc::SortMerge, MERGE_SORT},
+	{Tc::SortQuick, QUICK_SORT},
+	{Tc::SortRadix, RADIX_SORT},
+	{Tc::SortSelection, SELECTION_SORT},
+};
+}
+
+AlgorithmSelectionView::AlgorithmSelectionView(std::shared_ptr<TranslationService> translationService, std::shared_ptr<ViewService> viewService)
+	: translationService(std::move(translationService))
+	, viewService(std::move(viewService))
 {
 	setup();
 }
@@ -28,6 +45,8 @@ void AlgorithmSelectionView::getContext()
 
 void AlgorithmSelectionView::drawButtons() const
 {
+	drawTitle();
+
 	for(const auto & button : buttons)
 	{
 		button->draw();
@@ -36,40 +55,58 @@ void AlgorithmSelectionView::drawButtons() const
 	backButton->draw();
 }
 
+
+void AlgorithmSelectionView::drawTitle() const
+{
+	const auto titlePosX = ofGetWindowWidth() * 0.5;
+	const auto titlePosY = ofGetWindowHeight() * 0.1;
+
+	const auto bounds = titleFont.getStringBoundingBox(titleText, 0, 0);
+	const auto offset = ofVec2f( std::floor(-bounds.x - bounds.width * 0.5), std::floor(-bounds.y - bounds.height * 0.5) );
+
+	ofPushStyle();
+	ofSetColor(titleTextColor);
+	titleFont.drawString(titleText, titlePosX + offset.x, titlePosY + offset.y);
+	ofPopStyle();
+}
+
 void AlgorithmSelectionView::setup()
 {
 	ofAddListener(ofEvents().windowResized, this, &AlgorithmSelectionView::onWindowResized);
 
 	getContext();
-	if (mode == LEARNING_MODE)
+	if (mode == translationService->getTranslation(Tc::ModeLearning))
 	{
+		titleTextColor = ofColor(0,0,0);
 		ofBackground(ofColor(225,225,225));
 	}
-	else if (mode == VISUALIZATION_MODE)
+	else if (mode == translationService->getTranslation(Tc::ModeVisualization))
 	{
+		titleTextColor = ofColor(225,225,225);
 		ofBackground(ofColor(0,0,0));
 	}
 
 	setupButtons();
+	setupTitle();
 }
 
 void AlgorithmSelectionView::setupButtons()
 {
-	buttonsColors =
+	buttonsProperties =
 	{
-		{BUBBLE_SORT, ofColor(255, 102, 178)},
-		{INSERTION_SORT, ofColor(102, 255, 102)},
-		{MERGE_SORT, ofColor(255, 153, 51)},
-		{QUICK_SORT, ofColor(102, 178, 255)},
-		{RADIX_SORT, ofColor(255, 102, 102)},
-		{SELECTION_SORT, ofColor(153, 51, 255)},
+		{translationService->getTranslation(Tc::SortBubble), ofColor(255, 102, 178)},
+		{translationService->getTranslation(Tc::SortInsertion), ofColor(102, 255, 102)},
+		{translationService->getTranslation(Tc::SortMerge), ofColor(255, 153, 51)},
+		{translationService->getTranslation(Tc::SortQuick), ofColor(102, 178, 255)},
+		{translationService->getTranslation(Tc::SortRadix), ofColor(255, 102, 102)},
+		{translationService->getTranslation(Tc::SortSelection), ofColor(153, 51, 255)},
 	};
 
-	for (const auto & color : buttonsColors)
+	for (const auto & property : buttonsProperties)
 	{
 		const auto button = std::make_shared<Button>(0, 0, 0, 0);
-		button->setText(color.first);
-		button->setBackgroundColor(color.second);
+		button->setText(property.first);
+		button->setBackgroundColor(property.second);
 		ofAddListener(button->clickedInside, this, &AlgorithmSelectionView::onButtonPressed);
 
 		buttons.emplace_back(button);
@@ -82,7 +119,7 @@ void AlgorithmSelectionView::setupButtons()
 void AlgorithmSelectionView::setupBackButton()
 {
 	backButton = std::make_shared<Button>(0, 0, 0, 0);
-	backButton->setText(BACK_BUTTON_LABEL);
+	backButton->setText(translationService->getTranslation(Tc::ButtonBack));
 	backButton->setBackgroundColor(ofColor(227, 64, 27));
 
 	ofAddListener(backButton->clickedInside, this, &AlgorithmSelectionView::onButtonPressed);
@@ -120,28 +157,52 @@ void AlgorithmSelectionView::setButtonsParameters() const
 	backButton->setFontSize(fontSize);
 }
 
+
+void AlgorithmSelectionView::setupTitle()
+{
+	const auto titleFontSize = (ofGetWindowHeight() / 35 + ofGetWindowWidth() / 35) / 2;
+	titleText = translationService->getTranslation(Tc::SortAlgorithms);
+	titleFont.load("mono.ttf", titleFontSize);
+}
+
 void AlgorithmSelectionView::onButtonPressed(std::string & str)
 {
-	viewService->addToContext(SORT_CONTEXT, str);
-	if (str == BACK_BUTTON_LABEL)
+	if (str == translationService->getTranslation(Tc::ButtonBack))
 	{
 		viewService->clearContext();
 		viewService->setCurrentView(ViewType::ModeSelectionView);
 	}
+	else
+	{
+		try
+		{
+			const auto it = std::find_if(sortTranslationToConstMap.begin(), sortTranslationToConstMap.end(), [&str, this](const auto & element)
+			{
+				return translationService->getTranslation(element.first) == str;
+			});
+			viewService->addToContext(SORT_CONTEXT, sortTranslationToConstMap.at(it->first));
+			
+		}
+		catch (const std::exception & ex)
+		{
+			logger("Invalid sort type");
+		}
 
-	else if(mode == LEARNING_MODE)
-	{
-		viewService->setCurrentView(ViewType::LearningModeView);
-	}
-	else if(mode == VISUALIZATION_MODE)
-	{
-		viewService->setCurrentView(ViewType::VisualizationModeView);
+		if(mode == translationService->getTranslation(Tc::ModeLearning))
+		{
+			viewService->setCurrentView(ViewType::LearningModeView);
+		}
+		else if(mode == translationService->getTranslation(Tc::ModeVisualization))
+		{
+			viewService->setCurrentView(ViewType::VisualizationModeView);
+		}
 	}
 }
 
 void AlgorithmSelectionView::onWindowResized(ofResizeEventArgs &)
 {
 	setButtonsParameters();
+	setupTitle();
 }
 
 void AlgorithmSelectionView::cleanup()

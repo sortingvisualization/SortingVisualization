@@ -1,9 +1,20 @@
 #include "ModeSelectionView.h"
 
+#include "TranslationService.h"
 #include "ViewService.h"
 
-ModeSelectionView::ModeSelectionView(std::shared_ptr<ViewService> viewService)
-	: viewService(std::move(viewService))
+namespace
+{
+std::map<Language, Tc> languageToTranslationMap =
+{
+	{Language::English, Tc::LanguageEnglish},
+	{Language::Polish, Tc::LanguagePolish},
+};
+}
+
+ModeSelectionView::ModeSelectionView(std::shared_ptr<TranslationService> translationService, std::shared_ptr<ViewService> viewService)
+	: translationService(std::move(translationService))
+	, viewService(std::move(viewService))
 {
 	setup();
 }
@@ -28,7 +39,10 @@ void ModeSelectionView::drawButtons() const
 	{
 		button->draw();
 	}
+
+	languageButton->draw();
 }
+
 
 void ModeSelectionView::setup()
 {
@@ -40,21 +54,29 @@ void ModeSelectionView::setup()
 
 void ModeSelectionView::setupButtons()
 {
-	buttonsColors =
+	buttons.clear();
+
+	buttonProperties =
 	{
-		{LEARNING_MODE, ofColor(102, 178, 255)},
-		{VISUALIZATION_MODE, ofColor(0, 0, 102)},
+		{translationService->getTranslation(Tc::ModeLearning), ofColor(102, 178, 255)},
+		{translationService->getTranslation(Tc::ModeVisualization), ofColor(0, 0, 102)},
 	};
 
-	for(const auto & color : buttonsColors)
+	for(const auto & property : buttonProperties)
 	{
 		const auto button = std::make_shared<Button>(0, 0, 0, 0);
-		button->setText(color.first);
-		button->setBackgroundColor(color.second);
+		button->setText(property.first);
+		button->setBackgroundColor(property.second);
 		ofAddListener(button->clickedInside, this, &ModeSelectionView::onButtonPressed);
 
 		buttons.emplace_back(button);
 	}
+
+	languageButton = std::make_shared<Button>(0, 0, 0, 0);
+	const auto nextLanguage = translationService->getNextLanguage();
+	languageButton->setText(translationService->getTranslation(languageToTranslationMap.at(nextLanguage)));
+	languageButton->setBackgroundColor(ofColor(102, 178, 255));
+	ofAddListener(languageButton->clickedInside, this, &ModeSelectionView::onButtonPressed);
 
 	setButtonsParameters();
 }
@@ -68,6 +90,9 @@ void ModeSelectionView::setButtonsParameters() const
 	const double buttonWidth = windowWidth * 0.3;
 	const double buttonHeight = windowHeight * 0.3;
 
+	const auto fontSize = (ofGetWindowWidth() / 50 + ofGetScreenHeight() / 50) / 2;
+
+
 	for(int i = 0; i < buttonsCount; ++i)
 	{
 		const int column = i / (buttonsCount / 2);
@@ -75,16 +100,33 @@ void ModeSelectionView::setButtonsParameters() const
 		const double buttonY = windowHeight * 0.3;
 		
 		buttons.at(i)->setShape(ofRectangle(buttonX, buttonY, buttonWidth, buttonHeight));
-
-		const auto fontSize = (ofGetWindowWidth() / 50 + ofGetScreenHeight() / 50) / 2;
 		buttons.at(i)->setFontSize(fontSize);
 	}
+
+	const auto languageButtonWidth = windowWidth * 0.15;
+	const auto languageButtonHeight = windowHeight * 0.15;
+
+	languageButton->setShape(ofRectangle((windowWidth - languageButtonWidth), (windowHeight - languageButtonHeight), languageButtonWidth, languageButtonHeight));
+	languageButton->setFontSize(fontSize);
 }
 
 void ModeSelectionView::onButtonPressed(std::string & str)
 {
-	viewService->addToContext(MODE_CONTEXT, str);
-	viewService->setCurrentView(ViewType::AlgorithmSelectionView);
+	if(str == translationService->getTranslation(Tc::LanguageEnglish))
+	{
+		translationService->loadLanguage(Language::English);
+		setupButtons();
+	}
+	else if(str == translationService->getTranslation(Tc::LanguagePolish))
+	{
+		translationService->loadLanguage(Language::Polish);
+		setupButtons();
+	}
+	else
+	{
+		viewService->addToContext(MODE_CONTEXT, str);
+		viewService->setCurrentView(ViewType::AlgorithmSelectionView);
+	}
 }
 
 void ModeSelectionView::onWindowResized(ofResizeEventArgs &)
@@ -100,4 +142,6 @@ void ModeSelectionView::cleanup()
 	{
 		ofRemoveListener(button->clickedInside, this, &ModeSelectionView::onButtonPressed);
 	}
+
+	ofRemoveListener(languageButton->clickedInside, this, &ModeSelectionView::onButtonPressed);
 }

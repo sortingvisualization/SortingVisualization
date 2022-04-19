@@ -4,6 +4,7 @@
 #include "ofAppRunner.h"
 #include "StateManager.h"
 #include "StringSubstitute.h"
+#include "TranslationService.h"
 
 namespace
 {
@@ -43,8 +44,9 @@ int getMaxElementValue(It first, It last)
 }
 }
 
-LearningDraw::LearningDraw(std::shared_ptr<StateManager> stateManager)
-	: stateManager(std::move(stateManager))
+LearningDraw::LearningDraw(std::shared_ptr<TranslationService> translationService, std::shared_ptr<StateManager> stateManager)
+	: translationService(std::move(translationService))
+	, stateManager(std::move(stateManager))
 {
 	reloadFont();
 	ofAddListener(ofEvents().keyPressed, this, &LearningDraw::onKeyPressed);
@@ -161,16 +163,14 @@ void LearningDraw::drawStateContext() const
 		const double drawSurfaceWidth = ofGetWindowWidth();
 		const double drawSurfaceHeight = ofGetWindowHeight();
 
-		const auto boxPositionX = drawSurfaceWidth * 0.71;
-		const auto boxPositionY = drawSurfaceHeight * 0.86;
+		const auto boxPositionX = drawSurfaceWidth * 0.65;
+		const auto boxPositionY = drawSurfaceHeight * 0.85;
 
-		const auto boxWidth = drawSurfaceWidth * 0.3;
+		const auto boxWidth = drawSurfaceWidth * 0.35;
 		const auto boxHeight = drawSurfaceHeight * 0.15;
 
-		ofSetColor(255, 255, 255);
+		ofSetColor(ofColor(102, 178, 255));
 		ofDrawRectangle(boxPositionX, boxPositionY, boxWidth, boxHeight);
-		ofSetColor(83, 188, 104);
-		ofDrawRectangle(boxPositionX + 2, boxPositionY + 2, boxWidth - 4, boxHeight - 4);
 
 		const auto stateContext = stateManager->getStateContext();
 		std::string contextText; 
@@ -197,10 +197,10 @@ std::string LearningDraw::addValuesToContext(const StateContext & stateContext) 
 {
 	std::string result;
 
-	const auto it = sortStateToTextMap.find(stateContext.state);
-	if(it != sortStateToTextMap.end())
+	const auto it = sortStateToTranslationMap.find(stateContext.state);
+	if(it != sortStateToTranslationMap.end())
 	{
-		result = it->second;
+		result = translationService->getTranslation(it->second);
 		auto values = stateContext.values;
 
 		while(!values.empty())
@@ -229,8 +229,17 @@ void LearningDraw::onWindowResized(ofResizeEventArgs &)
 void LearningDraw::reloadFont()
 {
 	basicFontSize = (ofGetWindowWidth() / 75 + ofGetScreenHeight() / 75) / 2;
-	basicFont.load("mono.ttf", basicFontSize);
+	ofTrueTypeFontSettings basicFontSettings("mono.ttf", basicFontSize);
+	basicFontSettings.addRange(ofUnicode::Latin);
+	basicFontSettings.addRange(ofUnicode::LatinA);
+
+	basicFont.load(basicFontSettings);
 
 	contextFontSize = (ofGetWindowWidth() / 85 + ofGetScreenHeight() / 85) / 2;
-	contextFont.load("mono.ttf", contextFontSize);
+	ofTrueTypeFontSettings contextFontSettings("mono.ttf", contextFontSize);
+	contextFontSettings.addRange(ofUnicode::Latin);
+	contextFontSettings.addRange(ofUnicode::LatinA);
+	contextFontSettings.addRange(ofUnicode::Latin1Supplement);
+
+	contextFont.load(contextFontSettings);
 }

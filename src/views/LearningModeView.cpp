@@ -3,17 +3,18 @@
 #include "ArrayModel.h"
 #include "ArrayService.h"
 #include "DrawService.h"
-#include "Logger.h"
 #include "SortDefinitions.h"
 #include "SortService.h"
 #include "ViewService.h"
 #include "StateManager.h"
+#include "TranslationService.h"
 
-LearningModeView::LearningModeView(std::shared_ptr<ArrayService> arrayService, std::shared_ptr<DrawService> drawService, std::shared_ptr<SortService> sortService, std::shared_ptr<ViewService> viewService,
-	std::shared_ptr<StateManager> stateManager)
+LearningModeView::LearningModeView(std::shared_ptr<ArrayService> arrayService, std::shared_ptr<DrawService> drawService, std::shared_ptr<SortService> sortService, 
+                                   std::shared_ptr<TranslationService> translationService, std::shared_ptr<ViewService> viewService, std::shared_ptr<StateManager> stateManager)
 	: arrayService(std::move(arrayService))
 	, drawService(std::move(drawService))
 	, sortService(std::move(sortService))
+	, translationService(std::move(translationService))
 	, viewService(std::move(viewService))
 	, stateManager(std::move(stateManager))
 {
@@ -104,7 +105,7 @@ void LearningModeView::setupButtons()
 void LearningModeView::setupBackButton()
 {
 	backButton = std::make_shared<Button>(0, 0, 0, 0);
-	backButton->setText(BACK_BUTTON_LABEL);
+	backButton->setText(translationService->getTranslation(Tc::ButtonBack));
 	backButton->setBackgroundColor(ofColor(227, 64, 27));
 
 	ofAddListener(backButton->clickedInside, this, &LearningModeView::onButtonPressed);
@@ -113,7 +114,7 @@ void LearningModeView::setupBackButton()
 void LearningModeView::setupResetButton()
 {
 	resetButton = std::make_shared<Button>(0, 0, 0, 0);
-	resetButton->setText(RESET_BUTTON_LABEL);
+	resetButton->setText(translationService->getTranslation(Tc::ButtonReset));
 	resetButton->setBackgroundColor(ofColor(83, 188, 104));
 
 	ofAddListener(resetButton->clickedInside, this, &LearningModeView::onButtonPressed);
@@ -169,13 +170,13 @@ void LearningModeView::onButtonPressed(std::string & str)
 		{
 			stateManager->getLastState();
 		}
-		else if (str == BACK_BUTTON_LABEL)
+		else if (str == translationService->getTranslation(Tc::ButtonBack))
 		{
 			drawService->stopDrawing();
 			viewService->addToContext(MODE_CONTEXT, mode);
 			viewService->setCurrentView(ViewType::AlgorithmSelectionView);
 		}
-		else if (str == RESET_BUTTON_LABEL)
+		else if (str == translationService->getTranslation(Tc::ButtonReset))
 		{
 			sortSetup();
 		}

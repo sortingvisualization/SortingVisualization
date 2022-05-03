@@ -1,10 +1,10 @@
-<h1>Application for visualizing sorting algorithms made in C++ using openFrameworks</h1>  
+<h2>Application for visualizing sorting algorithms made in C++ using openFrameworks</h2>  
 
-<h2>Two modes available:</h2>  
+<h3>Two modes available:</h3>  
 Learning mode  
 Visualization mode  
 
-<h2>Implemented algorithms:</h2>  
+<h3>Implemented algorithms:</h3>  
 Bubble sort  
 Insertion sort  
 Merge sort  
@@ -15,13 +15,15 @@ Selection sort
 Feel free to use, share or modify the application.   
 If you have any questions regarding the code, found some bug that you want to report or simply want to improve the application in any way, please create an issue.
   
-<h2>Hotkeys:</h2>  
+<h3>Hotkeys:</h3>  
 F - full screen  
 H - hide UI  
 R - reset array  
   
   
-<h2>How to setup the project on Windows for Visual Studio.</h2>  
+  
+  
+<h3>How to setup the project on Windows for Visual Studio.</h3>  
 1. Download openFrameworks for Visual Studio from: https://openframeworks.cc/download/  
 2. Follow the steps here: https://openframeworks.cc/setup/vs/  
 3. Download the following addon: https://github.com/frauzufall/ofxGuiExtended/ and put it into the addons folder in your openFrameworks directory  
@@ -34,7 +36,7 @@ For example "src\helpers", "src\service\display", "src\services\logic" and so on
 If any folder is missing you will get a compile error but it should be relatively easy to figure our which folder is missing based on error messages  
 9. After all is done the program should be ready to compile  
   
-<h2>How to add a new sorting algorithm:</h2>  
+<h3>How to add a new sorting algorithm:</h3>  
 1. The easiest way is just to copy an existing class and rename it. You have to remember to rename not only the files themselves but also the classes inside the files  
 2. Open SortDefinitions.h and create a new SortType.  
 3. Open SortFactory.cpp and add references to your SortType  

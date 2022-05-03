@@ -3,6 +3,13 @@
 
 #include "ArrayModel.h"
 
+// this class serves as an extension of a normal vector of integers
+// the idea behind this class is to have extra information about the state of each element -> ElementState (not to confuse with general SortState)
+// as an example: a general SortState will let us know that two elements are being compared in the current step so we can display an appropriate text
+// however during each step we want to display much more information
+// elements that are already sorted, elements that are being compared with each other, current pivot etc.
+// for this purpose we use ElementState associated with each element of the array
+
 bool ArrayModel::compare(const int firstIndex, const int secondIndex) const
 {
 	return array.at(firstIndex).value > array.at(secondIndex).value;
@@ -43,17 +50,20 @@ void ArrayModel::setValue(const int index, const int value)
 	array.at(index).value = value;
 }
 
+// set state for single element
 void ArrayModel::setState(const int index, const ElementState elementState)
 {
 	array.at(index).elementState = elementState;
 }
 
+// set state for two elements
 void ArrayModel::setStates(const int firstIndex, const int secondIndex, const ElementState elementState)
 {
 	array.at(firstIndex).elementState = elementState;
 	array.at(secondIndex).elementState = elementState;
 }
 
+// set state for elements in a specific index range
 void ArrayModel::setStatesRange(const int start, const int end, const ElementState elementState)
 {
 	for(int i = start; i <= end; ++i)
@@ -62,6 +72,7 @@ void ArrayModel::setStatesRange(const int start, const int end, const ElementSta
 	}
 }
 
+// used when we want to keep the state of sorted elements only
 void ArrayModel::resetUnsorted()
 {
 	for(auto & element : array)
@@ -73,6 +84,7 @@ void ArrayModel::resetUnsorted()
 	}
 }
 
+// initialize array with ordered data (no duplicates, every element in the given range will be created)
 void ArrayModel::initializeData(const ArrayProperties & properties)
 {
 	std::random_device randomDevice;
@@ -86,6 +98,7 @@ void ArrayModel::initializeData(const ArrayProperties & properties)
 
 }
 
+// initialize array with random data (can have duplicates and not every element in the given range will appear)
 void ArrayModel::initializeRandomData(const ArrayProperties & properties)
 {
 	std::random_device randomDevice;

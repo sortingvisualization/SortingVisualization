@@ -12,6 +12,7 @@ void InsertionSort::sort(ArrayModel & model, const bool learningMode)
 	{
 		processing = true;
 
+		// IMPORTANT: sorting NEEDS to be done asynchronously otherwise the rendering will be stopped until the sorting is complete
 		future = std::async(std::launch::async, &InsertionSort::insertionSort, this, std::ref(model));
 	}
 	else
@@ -25,6 +26,8 @@ void InsertionSort::sort(ArrayModel & model, const bool learningMode)
 
 }
 
+// insertion sort implementation used for visualization mode
+// appropriate delays (std::this_thread::sleep_for(delay);) need to be added or the sorting will finish almost instantly for smaller arrays
 void InsertionSort::insertionSort(ArrayModel & model) const
 {
 	for(int i = 1; i < model.getArraySize(); ++i)
@@ -43,6 +46,14 @@ void InsertionSort::insertionSort(ArrayModel & model) const
 	}
 }
 
+// insertion sort implementation used for learning mode
+// notice the setState method calls, each method call saves the current state (positions of the array elements) of a single or mutltiple arrays into a vector
+// these states represent single steps of the sorting process
+// there is no rule when a step should be created, it all depends how we want to represent the sorting process
+// 
+// IMPORTANT: together with the state an appropriate state context needs to be created, this will show an appropriate text describing the current state in the bottom-right window
+// any number of values can be added optionally to the state context, they will be automatically inserted in the translation 
+// example for the text: "comparing %s with %s" if we add 2 values to the state context both %s will be replaced with those values
 void InsertionSort::insertionSortLearn(ArrayModel & model) const
 {
 	model.setState(0, ElementState::Sorted);

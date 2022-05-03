@@ -10,5 +10,4 @@ public:
 	virtual void stop() = 0;
 
 	virtual void updateSpeed(double delayRatio) = 0;
-	virtual bool isProcessing() = 0;
 };

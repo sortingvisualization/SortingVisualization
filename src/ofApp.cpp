@@ -13,9 +13,10 @@
 #include "ViewFactory.h"
 #include "ViewService.h"
 
-
+// creating all needed services and factories
 void ofApp::setup()
 {
+	// default langage when launching the application can be changed here
 	translationService = std::make_shared<TranslationService>(Language::Polish);
 	stateManager = std::make_shared<StateManager>();
 	sortFactory = std::make_shared<SortFactory>(stateManager);
@@ -36,6 +37,8 @@ void ofApp::update()
 
 void ofApp::draw()
 {
+	// this will draw all elements on screen
+	// elements related to each view (IView) and also the graphical representation of the sorting process itself (IDrawStrategy)
 	drawService->draw();
 }
 

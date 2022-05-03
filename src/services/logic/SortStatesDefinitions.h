@@ -60,6 +60,7 @@ enum class SortState
 
 namespace
 {
+//mapping each sort state with the appropriate translation value
 std::map<SortState, Tc> sortStateToTranslationMap =
 {
 	{SortState::Sorted, Tc::StateSorted},

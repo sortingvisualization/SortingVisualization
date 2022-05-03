@@ -6,6 +6,8 @@
 #include "IView.h"
 #include "Logger.h"
 
+// this service is used to delegate actions related to drawing elements on the screen
+// handles the drawing of both the views and the sorting process itself (via draw strategies) 
 
 DrawService::DrawService(std::shared_ptr<ArrayService> arrayService, std::shared_ptr<ViewService> viewService,
 	std::shared_ptr<DrawFactory> drawFactory)

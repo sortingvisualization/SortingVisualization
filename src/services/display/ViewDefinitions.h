@@ -1,5 +1,6 @@
 #pragma once
 
+//List of view types which need to be mapped inside ViewFactory
 enum class ViewType
 {
 	AlgorithmSelectionView,
@@ -10,6 +11,8 @@ enum class ViewType
 
 namespace
 {
+constexpr auto DEFAULT_THEME = "theme_default.json";
+
 constexpr auto MODE_CONTEXT = "ModeContext";
 constexpr auto SORT_CONTEXT = "SortContext";
 

@@ -3,7 +3,6 @@
 #include "ArrayModel.h"
 #include "ArrayService.h"
 #include "DrawService.h"
-#include "GuiConsts.h"
 #include "IDrawStrategy.h"
 #include "Logger.h"
 #include "SortDefinitions.h"
@@ -22,6 +21,7 @@ std::map<std::string, Tc> drawConstToTranslationMap =
 };
 }
 
+//This class is responsible for rendering UI objects in Visualization mode
 VisualizationModeView::VisualizationModeView(std::shared_ptr<ArrayService> arrayService, std::shared_ptr<DrawService> drawService, 
 	std::shared_ptr<SortService> sortService, std::shared_ptr<TranslationService> translationService, std::shared_ptr<ViewService> viewService)
 	: arrayService(std::move(arrayService))
@@ -38,6 +38,7 @@ VisualizationModeView::~VisualizationModeView()
 	cleanup();
 }
 
+// this draws all ui elements
 void VisualizationModeView::draw()
 {
 	if(!uiHidden)
@@ -46,6 +47,8 @@ void VisualizationModeView::draw()
 	}
 }
 
+// when entering this view we need to know which sorting algorithm was selected on the previous view
+// we also need to know which mode we are in so when the user pressed back we go back to the appropriate view
 void VisualizationModeView::getContext()
 {
 	if(viewService->keyExists(SORT_CONTEXT))
@@ -70,6 +73,8 @@ void VisualizationModeView::drawButtons() const
 	sortResetButton->draw();
 }
 
+// creating listeners will allow to call a class method based on certain events
+// in the example below: onWindowResized will be called when the window gets resized. "windowResized" is a built in event in openFrameworks
 void VisualizationModeView::setup()
 {
 	ofAddListener(ofEvents().keyPressed, this, &VisualizationModeView::onKeyPressed);
@@ -120,6 +125,8 @@ void VisualizationModeView::setupSortResetButton()
 	ofAddListener(sortResetButton->clickedInside, this, &VisualizationModeView::onButtonPressed);
 }
 
+//The method will be called on setup and after the window is resized.
+//This will allow to resize the buttons based on the application's window size.
 void VisualizationModeView::setButtonsParameters() const
 {
 	const auto screenWidth = ofGetWindowWidth();
@@ -137,6 +144,7 @@ void VisualizationModeView::setButtonsParameters() const
 	sortResetButton->setFontSize(fontSize);
 }
 
+//Creating dropdown(ofxGuiExtended addon) for selecting draw method
 void VisualizationModeView::setupDrawMethodsGroup()
 {
 	drawMethodsParams.setName(translationService->getTranslation(Tc::DrawMethod));
@@ -173,6 +181,7 @@ void VisualizationModeView::setupPropertiesParams()
 	propertiesParams.add(secondColorParam.set(translationService->getTranslation(Tc::Color2), ofColor(0,0,255),ofColor(10,10,10), ofColor(255,255,255)));
 }
 
+// create dropdown(ofxGuiExtended addon) for selecting properties such as array size and colors
 void VisualizationModeView::setupPropertiesGroup()
 {
 	arraySizeParam.addListener(this, &VisualizationModeView::onArraySizeChanged);
@@ -187,6 +196,7 @@ void VisualizationModeView::setupPropertiesGroup()
 	propertiesGroup->minimize();
 }
 
+// create slider(ofxGuiExtended addon) for setting sorting speed
 void VisualizationModeView::setupSpeedControl()
 {
 	speedParams.add(speedParam.set(translationService->getTranslation(Tc::Speed), 0.5, 0.1, 1));
@@ -199,6 +209,7 @@ void VisualizationModeView::setupSpeedControl()
 	speedGroup->loadTheme(DEFAULT_THEME, true);
 }
 
+// setup the initial colors in the draw strategy
 void VisualizationModeView::setupColors()
 {
 	const auto drawStrategy = drawService->getDrawStrategy();
@@ -206,6 +217,9 @@ void VisualizationModeView::setupColors()
 	drawStrategy->updateSecondColor(secondColorParam.get());
 }
 
+// setup array based on selected size
+// this method is called after pressing reset or changing the array size
+// obviously the ongoing sorting should be stopped 
 void VisualizationModeView::arraySetup() const
 {
 	sortResetButton->setText(translationService->getTranslation(Tc::ButtonSort));
@@ -213,7 +227,6 @@ void VisualizationModeView::arraySetup() const
 	sortService->stopSorting();
 	arrayService->initializeArray(ArrayProperties(arraySize, 0), false);
 	drawService->updateArray();
-
 }
 
 void VisualizationModeView::onArraySizeChanged(int & size)
@@ -227,6 +240,7 @@ void VisualizationModeView::onSortSpeedChanged(float & delayRatio)
 	sortService->updateSortingSpeed(delayRatio);
 }
 
+// handle button events
 void VisualizationModeView::onButtonPressed(std::string & str)
 {
 	if(!uiHidden)
@@ -235,6 +249,7 @@ void VisualizationModeView::onButtonPressed(std::string & str)
 		{
 			drawService->stopDrawing();
 			sortService->stopSorting();
+			// we need to set context so the algorithm selection view can still have information which mode we're currently in
 			viewService->addToContext(MODE_CONTEXT, mode);
 			viewService->setCurrentView(ViewType::AlgorithmSelectionView);
 		}
@@ -265,22 +280,28 @@ void VisualizationModeView::onDrawTypeChanged(int & index)
 	{
 		drawService->setDrawStrategy(nameToDrawTypeMap.at(it->first));
 	}
+
+	//initial colors need to be set after changing draw type
 	setupColors();
 	minimizeGroups();
 }
 
+//Updates the first gradient color in the current draw strategy
 void VisualizationModeView::onFirstColorChanged(ofColor & color)
 {
 	drawService->getDrawStrategy()->updateFirstColor(color);
 }
 
+//Updates the second gradient color in the current draw strategy
 void VisualizationModeView::onSecondColorChanged(ofColor & color)
 {
 	drawService->getDrawStrategy()->updateSecondColor(color);
 }
 
+// handle key events
 void VisualizationModeView::onKeyPressed(ofKeyEventArgs & ev)
 {
+	// go back to the previous view
 	if (ev.key == OF_KEY_BACKSPACE)
 	{
 		drawService->stopDrawing();
@@ -288,10 +309,12 @@ void VisualizationModeView::onKeyPressed(ofKeyEventArgs & ev)
 		viewService->addToContext(MODE_CONTEXT, mode);
 		viewService->setCurrentView(ViewType::AlgorithmSelectionView);
 	}
+	// generate new random array
 	else if (ev.key == 'r')
 	{
 		arraySetup();
 	}
+	// hide ui
 	else if (ev.key == 'h')
 	{
 		uiHidden = !uiHidden;
@@ -304,6 +327,7 @@ void VisualizationModeView::onWindowResized(ofResizeEventArgs &)
 	setButtonsParameters();
 }
 
+// minimize dropdowns
 void VisualizationModeView::minimizeGroups() const
 {
 	if(drawMethodsGroup != nullptr)
@@ -316,6 +340,7 @@ void VisualizationModeView::minimizeGroups() const
 	}
 }
 
+// all listeners need to be removed when the class object is destroyed (when switching views for example). Otherwise the application will crash.
 void VisualizationModeView::cleanup()
 {
 	ofRemoveListener(ofEvents().keyPressed, this, &VisualizationModeView::onKeyPressed);

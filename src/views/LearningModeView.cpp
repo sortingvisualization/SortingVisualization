@@ -26,6 +26,7 @@ LearningModeView::~LearningModeView()
 	cleanup();
 }
 
+// main method to draw all ui elements
 void LearningModeView::draw()
 {
 	if(!uiHidden)
@@ -34,6 +35,8 @@ void LearningModeView::draw()
 	}
 }
 
+// when entering this view we need to know which sorting algorithm was selected on the previous view
+// we also need to know which mode we are in so when the user pressed back we go back to the appropriate view
 void LearningModeView::getContext()
 {
 	if(viewService->keyExists(SORT_CONTEXT))
@@ -58,6 +61,8 @@ void LearningModeView::drawButtons() const
 	resetButton->draw();
 }
 
+// creating listeners will allow to call a class method based on certain events
+// in the example below: onWindowResized will be called when the window gets resized. "windowResized" is a built in event in openFrameworks
 void LearningModeView::setup()
 {
 	ofAddListener(ofEvents().keyPressed, this, &LearningModeView::onKeyPressed);
@@ -120,6 +125,8 @@ void LearningModeView::setupResetButton()
 	ofAddListener(resetButton->clickedInside, this, &LearningModeView::onButtonPressed);
 }
 
+// the method will be called on setup and after the window is resized
+// this will allow to resize the buttons based on the application's window size
 void LearningModeView::setButtonsParameters() const
 {
 	const auto windowWidth = ofGetWindowWidth();
@@ -154,6 +161,7 @@ void LearningModeView::onButtonPressed(std::string & str)
 {
 	if(!uiHidden)
 	{
+		// moving through sorting states using buttons
 		if(str == PREV_BUTTON_LABEL)
 		{
 			stateManager->getPreviousState();
@@ -170,12 +178,17 @@ void LearningModeView::onButtonPressed(std::string & str)
 		{
 			stateManager->getLastState();
 		}
+
+		// go back to the previous view
 		else if (str == translationService->getTranslation(Tc::ButtonBack))
 		{
 			drawService->stopDrawing();
+			// we need to set context so the algorithm selection view can still have information which mode we're currently in 
 			viewService->addToContext(MODE_CONTEXT, mode);
 			viewService->setCurrentView(ViewType::AlgorithmSelectionView);
 		}
+
+		// generate new random array
 		else if (str == translationService->getTranslation(Tc::ButtonReset))
 		{
 			sortSetup();
@@ -190,8 +203,10 @@ void LearningModeView::sortSetup()
 	sortService->sort(true);
 }
 
+// handle key events
 void LearningModeView::onKeyPressed(ofKeyEventArgs & ev)
 {
+	// moving through sorting states using arrow keys
 	if (ev.key == OF_KEY_LEFT)
 	{
 		stateManager->getPreviousState();
@@ -208,27 +223,32 @@ void LearningModeView::onKeyPressed(ofKeyEventArgs & ev)
 	{
 		stateManager->getLastState();
 	}
+	// go back to the previous view
 	else if (ev.key == OF_KEY_BACKSPACE)
 	{
 		drawService->stopDrawing();
 		viewService->addToContext(MODE_CONTEXT, mode);
 		viewService->setCurrentView(ViewType::AlgorithmSelectionView);
 	}
+	// generate new random array
 	else if (ev.key == 'r')
 	{
 		sortSetup();
 	}
+	// hide ui
 	else if (ev.key == 'h')
 	{
 		uiHidden = !uiHidden;
 	}
 }
 
+// resize buttons on this view after the window size has changed
 void LearningModeView::onWindowResized(ofResizeEventArgs &)
 {
 	setButtonsParameters();
 }
 
+// all listeners need to be removed when the class object is destroyed (when switching views for example). Otherwise the application will crash.
 void LearningModeView::cleanup()
 {
 	ofRemoveListener(ofEvents().keyPressed, this, &LearningModeView::onKeyPressed);

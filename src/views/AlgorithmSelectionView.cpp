@@ -30,11 +30,15 @@ AlgorithmSelectionView::~AlgorithmSelectionView()
 	cleanup();
 }
 
+// main method to draw all ui elements
 void AlgorithmSelectionView::draw()
 {
+	drawTitle();
 	drawButtons();
 }
 
+// selecting an algorithm on this view will change the view either to LearningModeView VisualiuzationModeView
+// this is determined based on the context. The below context is set on the ModeSelectionView
 void AlgorithmSelectionView::getContext()
 {
 	if(viewService->keyExists(MODE_CONTEXT))
@@ -45,8 +49,6 @@ void AlgorithmSelectionView::getContext()
 
 void AlgorithmSelectionView::drawButtons() const
 {
-	drawTitle();
-
 	for(const auto & button : buttons)
 	{
 		button->draw();
@@ -55,7 +57,7 @@ void AlgorithmSelectionView::drawButtons() const
 	backButton->draw();
 }
 
-
+// draw title text
 void AlgorithmSelectionView::drawTitle() const
 {
 	const auto titlePosX = ofGetWindowWidth() * 0.5;
@@ -70,6 +72,8 @@ void AlgorithmSelectionView::drawTitle() const
 	ofPopStyle();
 }
 
+// creating listeners will allow to call a class method based on certain events. 
+// in the example below: onWindowResized will be called when the window gets resized. "windowResized" is a built in event in openFrameworks.
 void AlgorithmSelectionView::setup()
 {
 	ofAddListener(ofEvents().windowResized, this, &AlgorithmSelectionView::onWindowResized);
@@ -125,6 +129,8 @@ void AlgorithmSelectionView::setupBackButton()
 	ofAddListener(backButton->clickedInside, this, &AlgorithmSelectionView::onButtonPressed);
 }
 
+// the method will be called on setup and after the window is resized.
+// this will allow to resize the buttons based on the application's window size.
 void AlgorithmSelectionView::setButtonsParameters() const
 {
 	const int buttonsCount = buttons.size();
@@ -180,6 +186,7 @@ void AlgorithmSelectionView::onButtonPressed(std::string & str)
 			{
 				return translationService->getTranslation(element.first) == str;
 			});
+			// we add context here so the next screen will know which sorting algorithm was selected
 			viewService->addToContext(SORT_CONTEXT, sortTranslationToConstMap.at(it->first));
 			
 		}
@@ -188,6 +195,7 @@ void AlgorithmSelectionView::onButtonPressed(std::string & str)
 			logger("Invalid sort type");
 		}
 
+		// Setting next view based on context
 		if(mode == translationService->getTranslation(Tc::ModeLearning))
 		{
 			viewService->setCurrentView(ViewType::LearningModeView);
@@ -199,12 +207,14 @@ void AlgorithmSelectionView::onButtonPressed(std::string & str)
 	}
 }
 
+// resize both buttons and title on this view after the window size has changed
 void AlgorithmSelectionView::onWindowResized(ofResizeEventArgs &)
 {
 	setButtonsParameters();
 	setupTitle();
 }
 
+// all listeners need to be removed when the class object is destroyed (when switching views for example). Otherwise the application will crash.
 void AlgorithmSelectionView::cleanup()
 {
 	ofRemoveListener(ofEvents().windowResized, this, &AlgorithmSelectionView::onWindowResized);

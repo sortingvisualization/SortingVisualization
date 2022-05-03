@@ -24,11 +24,13 @@ ModeSelectionView::~ModeSelectionView()
 	cleanup();
 }
 
+// this draws all ui elements
 void ModeSelectionView::draw()
 {
 	drawButtons();
 }
 
+// this is the main menu screen, getting context is not needed
 void ModeSelectionView::getContext()
 {
 }
@@ -52,6 +54,7 @@ void ModeSelectionView::setup()
 	setupButtons();
 }
 
+// create buttons for mode selection and changing the language
 void ModeSelectionView::setupButtons()
 {
 	buttons.clear();
@@ -81,6 +84,8 @@ void ModeSelectionView::setupButtons()
 	setButtonsParameters();
 }
 
+// the method will be called on setup and after the window is resized.
+// this will allow to resize the buttons based on the application's window size.
 void ModeSelectionView::setButtonsParameters() const
 {
 	const int buttonsCount = buttons.size();
@@ -110,6 +115,7 @@ void ModeSelectionView::setButtonsParameters() const
 	languageButton->setFontSize(fontSize);
 }
 
+// handle button events
 void ModeSelectionView::onButtonPressed(std::string & str)
 {
 	if(str == translationService->getTranslation(Tc::LanguageEnglish))
@@ -124,16 +130,19 @@ void ModeSelectionView::onButtonPressed(std::string & str)
 	}
 	else
 	{
+		// we need to add mode context so on the next screen there is information which mode was selected
 		viewService->addToContext(MODE_CONTEXT, str);
 		viewService->setCurrentView(ViewType::AlgorithmSelectionView);
 	}
 }
 
+// resize buttons on this view after the window size has changed
 void ModeSelectionView::onWindowResized(ofResizeEventArgs &)
 {
 	setButtonsParameters();
 }
 
+// all listeners need to be removed when the class object is destroyed (when switching views for example). Otherwise the application will crash.
 void ModeSelectionView::cleanup()
 {
 	ofRemoveListener(ofEvents().windowResized, this, &ModeSelectionView::onWindowResized);

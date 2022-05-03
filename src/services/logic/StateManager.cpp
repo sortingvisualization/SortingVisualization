@@ -2,6 +2,11 @@
 
 #include "Logger.h"
 
+// this class is used to save current states of specified arrays
+// the class is used specifically for learning mode
+// each state is saved into a vector and the user can navigate through those states
+
+//add new state, you can add as many arrays as you want, check the State class constructor
 void StateManager::addState(const State & state)
 {
 	states.emplace_back(state);
@@ -13,6 +18,7 @@ void StateManager::clearStates()
 	states.clear();
 }
 
+// returns current state
 State StateManager::getCurrentState() const
 {
 	try
@@ -26,6 +32,7 @@ State StateManager::getCurrentState() const
 	}
 }
 
+// moves to next state
 State StateManager::getNextState()
 {
 	if(currentStateIndex + 1 < states.size())
@@ -37,6 +44,7 @@ State StateManager::getNextState()
 	return getCurrentState();
 }
 
+// moves to previous state
 State StateManager::getPreviousState()
 {
 	if(currentStateIndex - 1 >= 0)
@@ -47,6 +55,7 @@ State StateManager::getPreviousState()
 	return getCurrentState();
 }
 
+// moves to first state
 State StateManager::getFirstState()
 {
 	currentStateIndex = 0;
@@ -54,6 +63,7 @@ State StateManager::getFirstState()
 	return getCurrentState();
 }
 
+// moves to last state
 State StateManager::getLastState()
 {
 	currentStateIndex = states.size() - 1;
@@ -61,6 +71,7 @@ State StateManager::getLastState()
 	return getCurrentState();
 }
 
+// checks if any state was created
 bool StateManager::hasStates() const
 {
 	return states.size() > 0;
@@ -71,6 +82,8 @@ StateContext StateManager::getStateContext() const
 	return getCurrentState().getContext();
 }
 
+// sets state context, this context can be used in different ways to display information
+// in the basic implementation it's used to display text in the bottom-right window regarding the current sorting step (state)
 void StateManager::setContextCurrentState(const StateContext & context)
 {
 	states.back().setContext(context);

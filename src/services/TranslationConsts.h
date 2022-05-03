@@ -2,6 +2,8 @@
 #include <map>
 #include <string>
 
+// every text displayed on screen should be made a translation as a separate enum value
+// this will allow to translate it easily to different lanuages
 enum class Tc
 {
 	ArraySize,
@@ -83,6 +85,8 @@ enum class Tc
 
 namespace
 {
+// the string value in this mapping refers to the key in the .json file for the specific language
+// the string value is the same as the enum value to avoid confusion
 std::map<Tc, std::string> translationConstToKeyMap =
 {
 	{Tc::ArraySize, "ArraySize"},

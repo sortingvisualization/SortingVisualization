@@ -9,7 +9,6 @@ public:
 	void stop() override;
 
 	void updateSpeed(double delayRatio) override;
-	bool isProcessing() override;
 
 
 protected:

@@ -5,6 +5,8 @@
 #include "Logger.h"
 #include "ViewFactory.h"
 
+// this service is used to navigate between screens and to set and retrieve context used on various screens
+
 std::shared_ptr<IView> ViewService::getCurrentView() const
 {
 	return currentView;

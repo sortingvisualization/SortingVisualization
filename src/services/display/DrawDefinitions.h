@@ -2,6 +2,7 @@
 #include <map>
 #include <string>
 
+//List of draw types which need to be mapped inside DrawFactory
 enum class DrawType
 {
 	CircleDraw,
@@ -18,6 +19,7 @@ constexpr auto COLUMNS_DRAW = "Columns";
 constexpr auto LINES_DRAW = "Lines";
 constexpr auto PYRAMID_DRAW = "Pyramid";
 
+//Mapping the name of the draw type with its enum. The name functions as a key in order to get the translation.
 std::map<std::string, DrawType> nameToDrawTypeMap = {
 	{CIRCLE_DRAW, DrawType::CircleDraw},
 	{COLUMNS_DRAW, DrawType::ColumnsDraw},

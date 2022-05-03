@@ -2,7 +2,7 @@
 #include "ArrayService.h"
 #include "SortFactory.h"
 
-
+// this service is used to delegate actions related to the sorting process
 SortService::SortService(std::shared_ptr<ArrayService> arrayService, std::shared_ptr<SortFactory> sortFactory)
 	: arrayService(std::move(arrayService))
 	, sortFactory(std::move(sortFactory))

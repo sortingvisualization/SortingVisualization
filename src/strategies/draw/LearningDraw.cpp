@@ -71,6 +71,9 @@ void LearningDraw::draw(const std::vector<ArrayElement> &)
 
 		for(int i = size; i > 0; --i)
 		{
+			// for radix sort we use different drawing method
+			// there might be algorithms that could required a totally different graphical representation
+			// this is totally up to the user to decide how draw the sorting process
 			if(stateManager->getSortType() == SortType::RadixSort)
 			{
 				drawBuckets(arrays.at(i - 1), size, i);
@@ -96,6 +99,8 @@ void LearningDraw::drawColumns(const std::vector<ArrayElement>& array, const int
 
 		const auto columnPosX = (columnWidth + COLUMN_PADDING) * i + offsetX;
 		auto columnPosY = drawSurfaceHeight / arraysCount * position - drawSurfaceHeight * 0.1 * position;
+
+		// if we have only 1 array we should draw it in the middle of the screen
 		if(arraysCount == 1)
 		{
 			columnPosY *= 0.75;
@@ -156,6 +161,7 @@ void LearningDraw::drawBuckets(const std::vector<ArrayElement> & array, const in
 	drawStateContext();
 }
 
+// this is used to draw the window where contextual information is displayed regarding each step (state) of the sorting process
 void LearningDraw::drawStateContext() const
 {
 	if(!uiHidden)
@@ -184,6 +190,7 @@ void LearningDraw::drawStateContext() const
 	}
 }
 
+// used to draw the text in the middle of an object based on the objects coordinates (buttons, windows, etc.)
 void LearningDraw::drawCenteredText(const std::string & text, const double posX, const double posY, const ofColor color, ofTrueTypeFont font) const
 {
 	const auto bounds = font.getStringBoundingBox(text, 0, 0);
@@ -228,6 +235,9 @@ void LearningDraw::onWindowResized(ofResizeEventArgs &)
 
 void LearningDraw::reloadFont()
 {
+	// the formulas for font sizes where determined empirically
+	// when tested it worked well with many standard screen resolutions
+
 	basicFontSize = (ofGetWindowWidth() / 75 + ofGetScreenHeight() / 75) / 2;
 	ofTrueTypeFontSettings basicFontSettings("mono.ttf", basicFontSize);
 	basicFontSettings.addRange(ofUnicode::Latin);

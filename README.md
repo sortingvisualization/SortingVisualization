@@ -1,5 +1,8 @@
 <h2>Application for visualizing sorting algorithms made in C++ using openFrameworks</h2>  
 
+Feel free to use, share or modify the application. If you have any questions regarding the code, found some bug that<br>
+you want to report or simply want to improve the application in any way, please create an issue.<br>
+
 <h3>Two modes available:</h3>
 Learning mode<br>
 Visualization mode<br>
@@ -10,10 +13,7 @@ Insertion sort<br>
 Merge sort<br>
 Quicksort<br>
 Radix sort<br>
-Selection sort<br><br>
-
-Feel free to use, share or modify the application. If you have any questions regarding the code, found some bug that<br>
-you want to report or simply want to improve the application in any way, please create an issue.<br>
+Selection sort<br>
 
 <h3>Hotkeys:</h3>
 F - full screen<br>

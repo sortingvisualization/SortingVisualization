@@ -10,7 +10,7 @@ Insertion sort<br>
 Merge sort<br>
 Quicksort<br>
 Radix sort<br>
-Selection sort<br>
+Selection sort<br><br>
 
 Feel free to use, share or modify the application. If you have any questions regarding the code, found some bug that<br>
 you want to report or simply want to improve the application in any way, please create an issue.<br>

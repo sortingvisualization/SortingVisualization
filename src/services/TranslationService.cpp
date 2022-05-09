@@ -56,7 +56,7 @@ Language TranslationService::getNextLanguage() const
 	auto it = languageToTranslationFileMap.find(currentLanguage);
 	if(it != languageToTranslationFileMap.end())
 	{
-		if(it++ != languageToTranslationFileMap.end())
+		if(++it != languageToTranslationFileMap.end())
 		{
 			return it->first;
 		}

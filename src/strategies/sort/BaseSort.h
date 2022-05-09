@@ -6,6 +6,7 @@
 class BaseSort : public ISortStrategy
 {
 public:
+	~BaseSort();
 	void stop() override;
 
 	void updateSpeed(double delayRatio) override;

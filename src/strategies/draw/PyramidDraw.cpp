@@ -1,12 +1,10 @@
 #include "PyramidDraw.h"
-#include "DrawHelpers.h"
-#include "ofAppRunner.h"
 
 void PyramidDraw::draw(const std::vector<ArrayElement> & array)
 {
-	const double drawSurfaceWidth = ofGetWindowWidth();
-	const double drawSurfaceHeight = ofGetWindowHeight() * (SURFACE_HEIGHT_FACTOR - 0.1);
-	const double padding = ofGetWindowHeight() * SURFACE_HEIGHT_PADDING_FACTOR * 0.5;
+	const double drawSurfaceWidth = getClampedWidth();
+	const double drawSurfaceHeight = getClampedHeight() * (SURFACE_HEIGHT_FACTOR - 0.1);
+	const double padding = getClampedHeight() * SURFACE_HEIGHT_PADDING_FACTOR * 0.5;
 
 	const auto size = array.size();
 

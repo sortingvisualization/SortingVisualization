@@ -1,14 +1,12 @@
 #include <cmath>
 
 #include "CircleDraw.h"
-#include "DrawHelpers.h"
-#include "ofAppRunner.h"
 
 void CircleDraw::draw(const std::vector<ArrayElement> & array)
 {
-	const double drawSurfaceWidth = ofGetWindowWidth();
-	const double drawSurfaceHeight = ofGetWindowHeight() * SURFACE_HEIGHT_FACTOR;
-	const double columnPadding = ofGetWindowHeight() * SURFACE_HEIGHT_PADDING_FACTOR;
+	const double drawSurfaceWidth = getClampedWidth();
+	const double drawSurfaceHeight = getClampedHeight() * SURFACE_HEIGHT_FACTOR;
+	const double columnPadding = getClampedHeight() * SURFACE_HEIGHT_PADDING_FACTOR;
 
 	const auto posX1 = drawSurfaceWidth / 2;
 	const auto posY1 = drawSurfaceHeight / 2 + columnPadding / 4;

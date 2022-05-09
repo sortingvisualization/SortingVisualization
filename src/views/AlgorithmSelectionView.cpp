@@ -60,8 +60,8 @@ void AlgorithmSelectionView::drawButtons() const
 // draw title text
 void AlgorithmSelectionView::drawTitle() const
 {
-	const auto titlePosX = ofGetWindowWidth() * 0.5;
-	const auto titlePosY = ofGetWindowHeight() * 0.1;
+	const auto titlePosX = getClampedWidth() * 0.5;
+	const auto titlePosY = getClampedHeight() * 0.1;
 
 	const auto bounds = titleFont.getStringBoundingBox(titleText, 0, 0);
 	const auto offset = ofVec2f( std::floor(-bounds.x - bounds.width * 0.5), std::floor(-bounds.y - bounds.height * 0.5) );
@@ -135,11 +135,11 @@ void AlgorithmSelectionView::setButtonsParameters() const
 {
 	const int buttonsCount = buttons.size();
 
-	const double windowWidth = ofGetWindowWidth();
-	const double windowHeight = ofGetWindowHeight();
+	const double windowWidth = getClampedWidth();
+	const double windowHeight = getClampedHeight();
 	double buttonWidth = windowWidth * 0.3;
 	double buttonHeight = windowHeight * 0.15;
-	auto fontSize = (ofGetWindowWidth() / 50 + ofGetScreenHeight() / 50) / 2;
+	auto fontSize = (getClampedWidth() / 50 + getClampedHeight() / 50) / 2;
 
 
 	for(int i = 0; i < buttonsCount; ++i)
@@ -154,7 +154,7 @@ void AlgorithmSelectionView::setButtonsParameters() const
 		buttons.at(i)->setFontSize(fontSize);
 	}
 
-	fontSize = (ofGetWindowWidth() / 60 + ofGetScreenHeight() / 60) / 2;
+	fontSize = (getClampedWidth() / 60 + getClampedHeight() / 60) / 2;
 	buttonWidth = windowWidth * 0.05 - 5;
 	buttonHeight = windowHeight * 0.05;
 
@@ -166,7 +166,7 @@ void AlgorithmSelectionView::setButtonsParameters() const
 
 void AlgorithmSelectionView::setupTitle()
 {
-	const auto titleFontSize = (ofGetWindowHeight() / 35 + ofGetWindowWidth() / 35) / 2;
+	const auto titleFontSize = (getClampedWidth() / 35 + getClampedHeight() / 35) / 2;
 	titleText = translationService->getTranslation(Tc::SortAlgorithms);
 	titleFont.load("mono.ttf", titleFontSize);
 }

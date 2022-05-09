@@ -129,12 +129,12 @@ void LearningModeView::setupResetButton()
 // this will allow to resize the buttons based on the application's window size
 void LearningModeView::setButtonsParameters() const
 {
-	const auto windowWidth = ofGetWindowWidth();
-	const auto windowHeight = ofGetWindowHeight();
+	const auto windowWidth = getClampedWidth();
+	const auto windowHeight = getClampedHeight();
 	const auto buttonWidth = windowWidth * 0.05 - 5;
 	const auto buttonHeight = windowHeight * 0.05;
 	const auto size = buttons.size();
-	const auto fontSize = (ofGetWindowWidth() / 60 + ofGetScreenHeight() / 60) / 2;
+	const auto fontSize = (getClampedWidth() / 60 + getClampedHeight() / 60) / 2;
 
 	for(int i = 0; i < size; ++i)
 	{

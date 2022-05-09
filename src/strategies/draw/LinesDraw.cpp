@@ -1,11 +1,9 @@
 #include "LinesDraw.h"
-#include "DrawHelpers.h"
-#include "ofAppRunner.h"
 
 void LinesDraw::draw(const std::vector<ArrayElement> & array)
 {
-	const double drawSurfaceWidth = ofGetWindowWidth();
-	const double drawSurfaceHeight = ofGetWindowHeight() * SURFACE_HEIGHT_FACTOR;
+	const double drawSurfaceWidth = getClampedWidth();
+	const double drawSurfaceHeight = getClampedHeight() * SURFACE_HEIGHT_FACTOR;
 
 	const auto width = drawSurfaceWidth / array.size();
 	const auto height = drawSurfaceHeight * SURFACE_HEIGHT_FACTOR;

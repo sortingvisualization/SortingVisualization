@@ -1,7 +1,5 @@
 #include "LearningDraw.h"
 #include "DrawDefinitions.h"
-#include "DrawHelpers.h"
-#include "ofAppRunner.h"
 #include "StateManager.h"
 #include "StringSubstitute.h"
 #include "TranslationService.h"
@@ -88,8 +86,8 @@ void LearningDraw::draw(const std::vector<ArrayElement> &)
 
 void LearningDraw::drawColumns(const std::vector<ArrayElement>& array, const int arraysCount, const int maxValue, const int position) const
 {
-	const double drawSurfaceWidth = ofGetWindowWidth();
-	const double drawSurfaceHeight = ofGetWindowHeight() * 0.9;
+	const double drawSurfaceWidth = getClampedWidth();
+	const double drawSurfaceHeight = getClampedHeight() * 0.9;
 
 	for(int i = 0; i < array.size(); ++i)
 	{
@@ -123,8 +121,8 @@ void LearningDraw::drawColumns(const std::vector<ArrayElement>& array, const int
 
 void LearningDraw::drawBuckets(const std::vector<ArrayElement> & array, const int arraysCount, const int position) const
 {
-	const double drawSurfaceWidth = ofGetWindowWidth();
-	const double drawSurfaceHeight = ofGetWindowHeight() * 0.8;
+	const double drawSurfaceWidth = getClampedWidth();
+	const double drawSurfaceHeight = getClampedHeight() * 0.8;
 
 	for(int i = 0; i < array.size(); ++i)
 	{
@@ -166,8 +164,8 @@ void LearningDraw::drawStateContext() const
 {
 	if(!uiHidden)
 	{
-		const double drawSurfaceWidth = ofGetWindowWidth();
-		const double drawSurfaceHeight = ofGetWindowHeight();
+		const double drawSurfaceWidth = getClampedWidth();
+		const double drawSurfaceHeight = getClampedHeight();
 
 		const auto boxPositionX = drawSurfaceWidth * 0.65;
 		const auto boxPositionY = drawSurfaceHeight * 0.85;
@@ -238,14 +236,14 @@ void LearningDraw::reloadFont()
 	// the formulas for font sizes where determined empirically
 	// when tested it worked well with many standard screen resolutions
 
-	basicFontSize = (ofGetWindowWidth() / 75 + ofGetScreenHeight() / 75) / 2;
+	basicFontSize = (getClampedWidth() / 75 + getClampedHeight() / 75) / 2;
 	ofTrueTypeFontSettings basicFontSettings("mono.ttf", basicFontSize);
 	basicFontSettings.addRange(ofUnicode::Latin);
 	basicFontSettings.addRange(ofUnicode::LatinA);
 
 	basicFont.load(basicFontSettings);
 
-	contextFontSize = (ofGetWindowWidth() / 85 + ofGetScreenHeight() / 85) / 2;
+	contextFontSize = (getClampedWidth() / 85 + getClampedHeight() / 85) / 2;
 	ofTrueTypeFontSettings contextFontSettings("mono.ttf", contextFontSize);
 	contextFontSettings.addRange(ofUnicode::Latin);
 	contextFontSettings.addRange(ofUnicode::LatinA);

@@ -7,6 +7,7 @@ SortService::SortService(std::shared_ptr<ArrayService> arrayService, std::shared
 	: arrayService(std::move(arrayService))
 	, sortFactory(std::move(sortFactory))
 {
+	setSortStrategy(SortType::BubbleSort);
 }
 
 SortService::~SortService()

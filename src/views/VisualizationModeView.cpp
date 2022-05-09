@@ -129,11 +129,11 @@ void VisualizationModeView::setupSortResetButton()
 //This will allow to resize the buttons based on the application's window size.
 void VisualizationModeView::setButtonsParameters() const
 {
-	const auto screenWidth = ofGetWindowWidth();
-	const auto screenHeight = ofGetWindowHeight();
+	const auto screenWidth = getClampedWidth();
+	const auto screenHeight = getClampedHeight();
 	const auto buttonWidth = screenWidth * 0.05 - 5;
 	const auto buttonHeight = screenHeight * 0.05;
-	const auto fontSize = (ofGetWindowWidth() / 60 + ofGetScreenHeight() / 60) / 2;
+	const auto fontSize = (getClampedWidth() / 60 + getClampedHeight() / 60) / 2;
 
 	backButton->setPosition(0, screenHeight - buttonHeight * 2);
 	backButton->setSize(buttonWidth * 2, buttonHeight);

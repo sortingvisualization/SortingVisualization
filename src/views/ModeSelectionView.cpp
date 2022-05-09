@@ -90,12 +90,12 @@ void ModeSelectionView::setButtonsParameters() const
 {
 	const int buttonsCount = buttons.size();
 
-	const double windowWidth = ofGetWindowWidth();
-	const double windowHeight = ofGetWindowHeight();
+	const double windowWidth = getClampedWidth();
+	const double windowHeight = getClampedHeight();
 	const double buttonWidth = windowWidth * 0.3;
 	const double buttonHeight = windowHeight * 0.3;
 
-	const auto fontSize = (ofGetWindowWidth() / 50 + ofGetScreenHeight() / 50) / 2;
+	const auto fontSize = (getClampedWidth() / 50 + getClampedHeight() / 50) / 2;
 
 
 	for(int i = 0; i < buttonsCount; ++i)

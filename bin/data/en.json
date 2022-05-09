@@ -27,7 +27,7 @@
 	"StateNoContext": "NoContext",
 	"StateSorted": "Array is sorted!",
 	"StateBubbleSort": "Bubble Sort",
-	"StateBubbleSortCompare": "Swap elements if\n\t%s > %s",
+	"StateBubbleSortCompare": "Select next two elements\nSwap elements if %s > %s",
 	"StateBubbleSortLastElementSorted": "Mark %s as sorted",
 	"StateBubbleSortLastElementsSorted": "Mark %s and %s as sorted\n\tArray is sorted!",
 	"StateBubbleSortSwap": "Swapped %s with %s",

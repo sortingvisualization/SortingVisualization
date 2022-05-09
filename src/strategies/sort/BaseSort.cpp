@@ -8,6 +8,11 @@ constexpr auto BASE_DELAY_VALUE = std::chrono::nanoseconds(50000000);
 
 // base sorting class where common logic is executed
 
+BaseSort::~BaseSort()
+{
+	stop();
+}
+
 // sets processing flag to false, when implementing an algorithm in visualization mode this flag should be checked every possible step
 // this will allow to terminate the sorting thread very quickly
 void BaseSort::stop()

@@ -38,4 +38,4 @@ You have to remember to rename not only the files themselves but also the classe
 2. Open SortDefinitions.h and create a new SortType<br><br>
 3. Open SortFactory.cpp and add references to your SortType<br><br>
 4. All that is left is to create your own sorting implementation. It will be easier to start with visualization mode implementation<br><br>
-5. In order to test your implementation you will need to add a button for your algorithm AlgoritmSelectionView.cpp<br><br>
+5. In order to test your implementation you will need to add a button for your algorithm in AlgoritmSelectionView.cpp<br><br>
